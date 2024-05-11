@@ -2,6 +2,17 @@
 import { translate } from 'bing-translate-api';
 
 export default async function handler(req, res) {
+    // Set CORS headers
+    // Allows all domains during development
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+    // Respond to preflight requests
+    if (req.method === 'OPTIONS') {
+        return res.status(200).end();
+    }
+
     // Ensure the request is a POST method
     if (req.method !== 'POST') {
         res.setHeader('Allow', ['POST']);
@@ -28,9 +39,3 @@ export default async function handler(req, res) {
         res.status(500).json({ error: 'Failed to translate text' });
     }
 }
-
-/**
- * curl -X POST http://localhost:3000/api/translate \
--H "Content-Type: application/json" \
--d '{"text": "أحتاج إلى بعض التشجيع", "to": "en"}'
- */
